@@ -20,15 +20,31 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Get initial session and refresh if needed
     const initializeAuth = async () => {
+      let authInitializationError: any = null;
       try {
-        // Get current session first
-        const { data: { session } } = await supabase.auth.getSession();
-        setUser(session?.user ?? null);
+        // First, try to refresh the session
+        const { data: { session }, error } = await supabase.auth.refreshSession();
+        
+        if (error) {
+          authInitializationError = error;
+          // If refresh fails, get current session
+          const { data: { session: currentSession } } = await supabase.auth.getSession();
+          setUser(currentSession?.user ?? null);
+        } else {
+          setUser(session?.user ?? null);
+        }
       } catch (error) {
         console.error('Auth initialization error:', error);
+        authInitializationError = error;
         setUser(null);
       } finally {
         setLoading(false);
+      
+      if (!authInitializationError) {
+        // Redirect to home page after successful login
+        window.location.href = '/';
+      }
+      
       }
     };
 
