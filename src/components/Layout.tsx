@@ -25,7 +25,7 @@ export default function Layout({ children }: LayoutProps) {
 
   const handleSignOut = async () => {
     await signOut();
-    window.location.href = '/login';
+    navigate('/login');
   };
 
   const navigation = [

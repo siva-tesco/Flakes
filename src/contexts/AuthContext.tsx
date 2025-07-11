@@ -40,11 +40,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } finally {
         setLoading(false);
       
-      if (!authInitializationError) {
-        // Redirect to home page after successful login
-        window.location.href = '/';
-      }
-      
       }
     };
 
